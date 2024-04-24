@@ -1,0 +1,19 @@
+{
+  "name": "0x01-react_intro",
+  "version": "1.0.0",
+  "homepage": "https://mwahk3ymer.github.io/alx-react",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mwahk3ymer/alx-react.git"
+  },
+  "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "author": "",
+  "license": "ISC"
+}
