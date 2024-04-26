@@ -1,4 +1,9 @@
+mport { Map } from 'immutable';
+
 export default function accessImmutableObject(object, array) {
-  // Use Array.reduce to iterate over the array of keys and access the nested values
-  return array.reduce((acc, key) => (acc && typeof acc === 'object' ? acc[key] : undefined), object);
+  // Convert the plain object to an Immutable.js Map
+  const immutableMap = Map(object);
+  
+  // Use the getIn method to access the nested values
+  return immutableMap.getIn(array);
 }

@@ -1,0 +1,17 @@
+// Define the accessImmutableObject function
+function accessImmutableObject(object, array) {
+  return array.reduce((acc, key) => (acc && typeof acc === 'object' ? acc[key] : undefined), object);
+}
+
+// Define the object and path array
+const object = {
+  name: {
+    first: "Guillaume",
+    last: "Salva"
+  }
+};
+const pathArray = ['name', 'first'];
+
+// Call the function and log the result
+console.log(accessImmutableObject(object, pathArray));
+
