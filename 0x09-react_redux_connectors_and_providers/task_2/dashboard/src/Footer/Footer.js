@@ -1,15 +1,38 @@
 import React from 'react';
-import { getFooterCopy, getFullYear } from '../utils/utils';
-import AppContext from '../App/AppContext';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { StyleSheet, css } from 'aphrodite';
 
-function Footer() {
-  const { user } = AppContext; 
-  return (
-    <div className="App-footer">
-      { user.isLoggedIn && <p><a href='#'>Contact us</a></p>}
-      <p>Copyright {getFullYear()} - {getFooterCopy()}</p>
-    </div>
-  )
-}
+const Footer = ({ user }) => (
+  <div className={css(footerStyles.footer)}>
+    <p>Copyright 2020 - holberton school</p>
+    {user.isLoggedIn && <a href="#">Contact us</a>}
+  </div>
+);
 
-export default Footer;
+Footer.propTypes = {
+  user: PropTypes.shape({
+    isLoggedIn: PropTypes.bool,
+    email: PropTypes.string
+  }).isRequired
+};
+
+const footerStyles = StyleSheet.create({
+  footer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderTop: '3px solid #E11D3F',
+    padding: '1rem',
+    fontStyle: 'italic'
+  }
+});
+
+// Define the mapStateToProps function
+const mapStateToProps = (state) => ({
+  user: state.get('user')
+});
+
+// Connect the Footer component to Redux
+export default connect(mapStateToProps)(Footer);

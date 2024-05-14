@@ -1,36 +1,11 @@
-// uiActionCreators.js
-import { bindActionCreators } from 'redux';
-import { login, logout, displayNotificationDrawer, hideNotificationDrawer } from './uiActionCreators';
+mport { LOGIN, LOGOUT } from './uiActionTypes';
 
-export function login(email, password) {
-  return {
-    type: LOGIN,
-    user: {
-      email,
-      password
-    }
-  };
-}
+export const login = (user) => ({
+	  type: LOGIN,
+	  user,
+});
 
-export function logout() {
-  return {
-    type: LOGOUT
-  };
-}
+export const logout = () => ({
+	  type: LOGOUT,
+});
 
-export function displayNotificationDrawer() {
-  return {
-    type: DISPLAY_NOTIFICATION_DRAWER
-  };
-}
-
-export function hideNotificationDrawer() {
-  return {
-    type: HIDE_NOTIFICATION_DRAWER
-  };
-}
-
-export const boundLogin = bindActionCreators(login, dispatch);
-export const boundLogout = bindActionCreators(logout, dispatch);
-export const boundDisplayNotificationDrawer = bindActionCreators(displayNotificationDrawer, dispatch);
-export const boundHideNotificationDrawer = bindActionCreators(hideNotificationDrawer, dispatch);
