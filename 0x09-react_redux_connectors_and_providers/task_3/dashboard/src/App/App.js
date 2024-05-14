@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { loginRequest, logout } from '../actions/userActions'; // Ensure these are correctly imported
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import Notification from '../Notifications/Notifications';
@@ -9,31 +8,18 @@ import Login from '../Login/Login';
 import CourseList from '../CourseList/CourseList';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import BodySection from '../BodySection/BodySection';
+import { getLatestNotification } from '../utils/utils';
 import { StyleSheet, css } from 'aphrodite';
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.listCourses = [
-      { id: 1, name: 'ES6', credit: 60 },
-      { id: 2, name: 'Webpack', credit: 20 },
-      { id: 3, name: 'React', credit: 40 }
-    ];
+import { displayNotificationDrawer, hideNotificationDrawer, loginRequest, logout } from '../actions/uiActionCreators';
 
-    this.state = {
-      listNotifications: [
-        { id: 1, value: 'New course available', type: 'default' },
-        { id: 2, value: 'New resume available', type: 'urgent' },
-        { id: 3, html: { __html: getLatestNotification() }, type: 'urgent' }
-      ]
-    };
+class App extends React.Component {
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleKeyDown);
   }
 
-  markNotificationAsRead = (id) => {
-    const newList = this.state.listNotifications.filter(keep => keep.id !== id);
-    this.setState({
-      listNotifications: newList
-    });
-  };
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyDown);
+  }
 
   handleKeyDown = (e) => {
     if (e.ctrlKey && e.key === 'h') {
@@ -43,21 +29,24 @@ class App extends React.Component {
     }
   };
 
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-  }
-
   render() {
-    const { isLoggedIn, displayDrawer, loginRequest, hideNotificationDrawer, displayNotificationDrawer } = this.props;
+    const { user, isLoggedIn, displayDrawer, displayNotificationDrawer, hideNotificationDrawer, loginRequest } = this.props;
+    const listCourses = [
+      { id: 1, name: 'ES6', credit: 60 },
+      { id: 2, name: 'Webpack', credit: 20 },
+      { id: 3, name: 'React', credit: 40 },
+    ];
+
+    const listNotifications = [
+      { id: 1, value: 'New course available', type: 'default' },
+      { id: 2, value: 'New resume available', type: 'urgent' },
+      { id: 3, html: { __html: getLatestNotification() }, type: 'urgent' },
+    ];
 
     return (
       <React.Fragment>
         <Notification
-          listNotifications={this.state.listNotifications}
+          listNotifications={listNotifications}
           displayDrawer={displayDrawer}
           handleDisplayDrawer={displayNotificationDrawer}
           handleHideDrawer={hideNotificationDrawer}
@@ -65,15 +54,15 @@ class App extends React.Component {
         <div className={css(bodyStyles.App)}>
           <Header />
           {isLoggedIn ? (
-            <BodySectionWithMarginBottom title='Course list'>
-              <CourseList listCourses={this.listCourses} />
+            <BodySectionWithMarginBottom title="Course list">
+              <CourseList listCourses={listCourses} />
             </BodySectionWithMarginBottom>
           ) : (
-            <BodySectionWithMarginBottom title='Log in to continue'>
+            <BodySectionWithMarginBottom title="Log in to continue">
               <Login logIn={loginRequest} />
             </BodySectionWithMarginBottom>
           )}
-          <BodySection title='News from the School'>
+          <BodySection title="News from the School">
             <p>Random Text</p>
           </BodySection>
           <div className={css(footerStyles.footer)}>
@@ -88,8 +77,8 @@ class App extends React.Component {
 const bodyStyles = StyleSheet.create({
   App: {
     position: 'relative',
-    minHeight: '100vh'
-  }
+    minHeight: '100vh',
+  },
 });
 
 const footerStyles = StyleSheet.create({
@@ -100,34 +89,41 @@ const footerStyles = StyleSheet.create({
     alignItems: 'center',
     borderTop: '3px solid #E11D3F',
     padding: '1rem',
-    fontStyle: 'italic'
-  }
+    fontStyle: 'italic',
+  },
 });
 
 App.propTypes = {
+  user: PropTypes.object,
   isLoggedIn: PropTypes.bool,
   displayDrawer: PropTypes.bool,
-  loginRequest: PropTypes.func.isRequired,
-  logout: PropTypes.func.isRequired,
-  displayNotificationDrawer: PropTypes.func.isRequired,
-  hideNotificationDrawer: PropTypes.func.isRequired
+  displayNotificationDrawer: PropTypes.func,
+  hideNotificationDrawer: PropTypes.func,
+  loginRequest: PropTypes.func,
+  logout: PropTypes.func,
 };
 
 App.defaultProps = {
+  user: null,
   isLoggedIn: false,
-  displayDrawer: false
+  displayDrawer: false,
+  displayNotificationDrawer: () => {},
+  hideNotificationDrawer: () => {},
+  loginRequest: () => {},
+  logout: () => {},
 };
 
 const mapStateToProps = (state) => ({
-  isLoggedIn: state.get('isUserLoggedIn'),
-  displayDrawer: state.get('isNotificationDrawerVisible')
+  user: state.ui.get('user'),
+  isLoggedIn: state.ui.get('isLoggedIn'),
+  displayDrawer: state.ui.get('isNotificationDrawerVisible'),
 });
 
 const mapDispatchToProps = {
+  displayNotificationDrawer,
+  hideNotificationDrawer,
   loginRequest,
   logout,
-  displayNotificationDrawer,
-  hideNotificationDrawer
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -1,4 +1,3 @@
-// uiReducer.test.js
 import uiReducer from './uiReducer';
 import { Map } from 'immutable';
 import { LOGIN, LOGOUT } from '../actions/uiActionTypes';
@@ -35,4 +34,3 @@ describe('uiReducer', () => {
     expect(uiReducer(initialState, logoutAction)).toEqual(expectedState);
   });
 });
-

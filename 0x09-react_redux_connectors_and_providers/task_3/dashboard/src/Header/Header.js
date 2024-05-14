@@ -1,33 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { StyleSheet, css } from 'aphrodite';
 import { logout } from '../actions/uiActionCreators';
+import { StyleSheet, css } from 'aphrodite';
 
 const Header = ({ user, logout }) => (
   <div className={css(headerStyles.header)}>
     <h1>School dashboard</h1>
-    {user.isLoggedIn && (
+    {user && (
       <div>
-        <span>Welcome, {user.email}</span>
-        <a href="#" onClick={logout}>Logout</a>
+        <p>
+          Welcome <strong>{user.email}</strong> (<a href="#" onClick={logout}>logout</a>)
+        </p>
       </div>
     )}
   </div>
 );
 
-Header.propTypes = {
-  user: PropTypes.shape({
-    isLoggedIn: PropTypes.bool,
-    email: PropTypes.string,
-  }).isRequired,
-  logout: PropTypes.func.isRequired,
-};
-
 const headerStyles = StyleSheet.create({
   header: {
     display: 'flex',
-    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     borderBottom: '3px solid #E11D3F',
@@ -35,15 +27,22 @@ const headerStyles = StyleSheet.create({
   },
 });
 
-// Define the mapStateToProps function
+Header.propTypes = {
+  user: PropTypes.object,
+  logout: PropTypes.func,
+};
+
+Header.defaultProps = {
+  user: null,
+  logout: () => {},
+};
+
 const mapStateToProps = (state) => ({
-  user: state.get('user'),
+  user: state.ui.get('user'),
 });
 
-// Define the mapDispatchToProps function
 const mapDispatchToProps = {
   logout,
 };
 
-// Connect the Header component to Redux
 export default connect(mapStateToProps, mapDispatchToProps)(Header);
